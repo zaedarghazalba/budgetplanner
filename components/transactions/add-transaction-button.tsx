@@ -126,7 +126,7 @@ export function AddTransactionButton({ categories }: AddTransactionButtonProps) 
                 onChange={(e) =>
                   setFormData({ ...formData, type: e.target.value, category_id: "" })
                 }
-                className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 disabled={loading}
               >
                 <option value="expense">Pengeluaran</option>
@@ -142,7 +142,7 @@ export function AddTransactionButton({ categories }: AddTransactionButtonProps) 
                 onChange={(e) =>
                   setFormData({ ...formData, category_id: e.target.value })
                 }
-                className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 disabled={loading}
                 required
               >

@@ -202,7 +202,7 @@ export function EditBudgetButton({ budget }: EditBudgetButtonProps) {
                 onChange={(e) =>
                   setFormData({ ...formData, category_id: e.target.value })
                 }
-                className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 disabled={loading}
               >
                 <option value="">Semua Kategori</option>
@@ -245,7 +245,7 @@ export function EditBudgetButton({ budget }: EditBudgetButtonProps) {
                 onChange={(e) =>
                   setFormData({ ...formData, period_type: e.target.value })
                 }
-                className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 disabled={loading}
               >
                 <option value="weekly">Mingguan</option>
