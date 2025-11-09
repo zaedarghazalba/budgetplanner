@@ -16,9 +16,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus, Loader2 } from "lucide-react";
+import { useToast } from "@/lib/hooks/use-toast";
 
 export function CreateBudgetButton() {
   const router = useRouter();
+  const { toast } = useToast();
   const supabase = createClient();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -51,7 +53,11 @@ export function CreateBudgetButton() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        alert("Anda harus login terlebih dahulu");
+        toast({
+          variant: "destructive",
+          title: "Login Diperlukan",
+          description: "Anda harus login terlebih dahulu.",
+        });
         return;
       }
 
@@ -83,11 +89,11 @@ export function CreateBudgetButton() {
           ? `${category.icon} ${category.name}`
           : "Semua Kategori";
 
-        alert(
-          `Budget plan untuk "${categoryName}" sudah ada!\n\n` +
-          `Satu kategori hanya bisa memiliki 1 budget plan aktif.\n` +
-          `Silakan edit budget plan yang sudah ada jika ingin mengubahnya.`
-        );
+        toast({
+          variant: "destructive",
+          title: "Budget Plan Sudah Ada",
+          description: `Budget plan untuk "${categoryName}" sudah ada. Satu kategori hanya bisa memiliki 1 budget plan aktif. Silakan edit budget plan yang sudah ada.`,
+        });
         setLoading(false);
         return;
       }
@@ -116,11 +122,19 @@ export function CreateBudgetButton() {
       });
 
       if (error) {
-        alert("Gagal membuat budget: " + error.message);
+        toast({
+          variant: "destructive",
+          title: "Gagal Membuat Budget",
+          description: error.message,
+        });
         return;
       }
 
-      alert("Budget berhasil dibuat!");
+      toast({
+        variant: "success",
+        title: "Budget Berhasil Dibuat!",
+        description: "Budget plan baru telah ditambahkan.",
+      });
       setOpen(false);
       setFormData({
         category_id: "",
@@ -131,7 +145,11 @@ export function CreateBudgetButton() {
       router.refresh();
     } catch (error) {
       console.error("Error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
+      toast({
+        variant: "destructive",
+        title: "Terjadi Kesalahan",
+        description: "Silakan coba lagi.",
+      });
     } finally {
       setLoading(false);
     }

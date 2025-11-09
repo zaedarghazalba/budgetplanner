@@ -16,6 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus, Loader2 } from "lucide-react";
+import { useToast } from "@/lib/hooks/use-toast";
 
 interface AddTransactionButtonProps {
   categories: any[];
@@ -23,6 +24,7 @@ interface AddTransactionButtonProps {
 
 export function AddTransactionButton({ categories }: AddTransactionButtonProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const supabase = createClient();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -43,7 +45,11 @@ export function AddTransactionButton({ categories }: AddTransactionButtonProps) 
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        alert("Anda harus login terlebih dahulu");
+        toast({
+          variant: "destructive",
+          title: "Login Diperlukan",
+          description: "Anda harus login terlebih dahulu.",
+        });
         return;
       }
 
@@ -57,11 +63,19 @@ export function AddTransactionButton({ categories }: AddTransactionButtonProps) 
       });
 
       if (error) {
-        alert("Gagal menambah transaksi: " + error.message);
+        toast({
+          variant: "destructive",
+          title: "Gagal Menambah Transaksi",
+          description: error.message,
+        });
         return;
       }
 
-      alert("Transaksi berhasil ditambahkan!");
+      toast({
+        variant: "success",
+        title: "Transaksi Berhasil Ditambahkan!",
+        description: "Transaksi baru telah dicatat.",
+      });
       setOpen(false);
       setFormData({
         type: "expense",
@@ -73,7 +87,11 @@ export function AddTransactionButton({ categories }: AddTransactionButtonProps) 
       router.refresh();
     } catch (error) {
       console.error("Error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
+      toast({
+        variant: "destructive",
+        title: "Terjadi Kesalahan",
+        description: "Silakan coba lagi.",
+      });
     } finally {
       setLoading(false);
     }

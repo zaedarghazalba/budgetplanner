@@ -16,6 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Trash2, Loader2 } from "lucide-react";
+import { useToast } from "@/lib/hooks/use-toast";
 
 interface DeleteBudgetButtonProps {
   budgetId: string;
@@ -24,6 +25,7 @@ interface DeleteBudgetButtonProps {
 
 export function DeleteBudgetButton({ budgetId, budgetName }: DeleteBudgetButtonProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -38,16 +40,28 @@ export function DeleteBudgetButton({ budgetId, budgetName }: DeleteBudgetButtonP
         .eq("id", budgetId);
 
       if (error) {
-        alert("Gagal menghapus budget: " + error.message);
+        toast({
+          variant: "destructive",
+          title: "Gagal Menghapus Budget",
+          description: error.message,
+        });
         return;
       }
 
-      alert("Budget berhasil dihapus!");
+      toast({
+        variant: "success",
+        title: "Budget Berhasil Dihapus!",
+        description: "Budget plan telah dihapus.",
+      });
       setOpen(false);
       router.refresh();
     } catch (error) {
       console.error("Error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
+      toast({
+        variant: "destructive",
+        title: "Terjadi Kesalahan",
+        description: "Silakan coba lagi.",
+      });
     } finally {
       setLoading(false);
     }

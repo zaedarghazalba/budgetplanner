@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Pencil, Trash2, Loader2 } from "lucide-react";
+import { useToast } from "@/lib/hooks/use-toast";
 
 interface TransactionListProps {
   transactions: any[];
@@ -24,6 +25,7 @@ interface TransactionListProps {
 
 export function TransactionList({ transactions, categories }: TransactionListProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const supabase = createClient();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -71,16 +73,28 @@ export function TransactionList({ transactions, categories }: TransactionListPro
         .eq("id", selectedTransaction.id);
 
       if (error) {
-        alert("Gagal mengupdate transaksi: " + error.message);
+        toast({
+          variant: "destructive",
+          title: "Gagal Mengupdate Transaksi",
+          description: error.message,
+        });
         return;
       }
 
-      alert("Transaksi berhasil diupdate!");
+      toast({
+        variant: "success",
+        title: "Transaksi Berhasil Diupdate!",
+        description: "Perubahan telah disimpan.",
+      });
       setEditOpen(false);
       router.refresh();
     } catch (error) {
       console.error("Error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
+      toast({
+        variant: "destructive",
+        title: "Terjadi Kesalahan",
+        description: "Silakan coba lagi.",
+      });
     } finally {
       setLoading(false);
     }
@@ -96,16 +110,28 @@ export function TransactionList({ transactions, categories }: TransactionListPro
         .eq("id", selectedTransaction.id);
 
       if (error) {
-        alert("Gagal menghapus transaksi: " + error.message);
+        toast({
+          variant: "destructive",
+          title: "Gagal Menghapus Transaksi",
+          description: error.message,
+        });
         return;
       }
 
-      alert("Transaksi berhasil dihapus!");
+      toast({
+        variant: "success",
+        title: "Transaksi Berhasil Dihapus!",
+        description: "Transaksi telah dihapus.",
+      });
       setDeleteOpen(false);
       router.refresh();
     } catch (error) {
       console.error("Error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
+      toast({
+        variant: "destructive",
+        title: "Terjadi Kesalahan",
+        description: "Silakan coba lagi.",
+      });
     } finally {
       setLoading(false);
     }

@@ -16,6 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Edit, Loader2 } from "lucide-react";
+import { useToast } from "@/lib/hooks/use-toast";
 
 interface EditBudgetButtonProps {
   budget: any;
@@ -23,6 +24,7 @@ interface EditBudgetButtonProps {
 
 export function EditBudgetButton({ budget }: EditBudgetButtonProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const supabase = createClient();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -66,7 +68,11 @@ export function EditBudgetButton({ budget }: EditBudgetButtonProps) {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        alert("Anda harus login terlebih dahulu");
+        toast({
+          variant: "destructive",
+          title: "Login Diperlukan",
+          description: "Anda harus login terlebih dahulu.",
+        });
         return;
       }
 
@@ -98,11 +104,11 @@ export function EditBudgetButton({ budget }: EditBudgetButtonProps) {
             ? `${category.icon} ${category.name}`
             : "Semua Kategori";
 
-          alert(
-            `Budget plan untuk "${categoryName}" sudah ada!\n\n` +
-            `Satu kategori hanya bisa memiliki 1 budget plan aktif.\n` +
-            `Silakan hapus budget plan yang lain terlebih dahulu.`
-          );
+          toast({
+            variant: "destructive",
+            title: "Budget Plan Sudah Ada",
+            description: `Budget plan untuk "${categoryName}" sudah ada. Satu kategori hanya bisa memiliki 1 budget plan aktif. Silakan hapus budget plan yang lain terlebih dahulu.`,
+          });
           setLoading(false);
           return;
         }
@@ -139,17 +145,29 @@ export function EditBudgetButton({ budget }: EditBudgetButtonProps) {
 
       if (error) {
         console.error("❌ Update error:", error);
-        alert("Gagal mengupdate budget: " + error.message);
+        toast({
+          variant: "destructive",
+          title: "Gagal Mengupdate Budget",
+          description: error.message,
+        });
         return;
       }
 
       console.log("✅ Budget updated successfully:", data);
-      alert("Budget berhasil diupdate!");
+      toast({
+        variant: "success",
+        title: "Budget Berhasil Diupdate!",
+        description: "Perubahan telah disimpan.",
+      });
       setOpen(false);
       router.refresh();
     } catch (error) {
       console.error("Error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
+      toast({
+        variant: "destructive",
+        title: "Terjadi Kesalahan",
+        description: "Silakan coba lagi.",
+      });
     } finally {
       setLoading(false);
     }
