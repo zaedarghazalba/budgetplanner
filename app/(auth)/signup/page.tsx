@@ -56,11 +56,13 @@ export default function SignupPage() {
         return;
       }
 
+      const user = authData.user;
+
       // Step 2: Manual create profile (bypass trigger)
       const { error: profileError } = await supabase
         .from("profiles")
         .insert({
-          id: authData.user.id,
+          id: user.id,
           email: email,
           full_name: name,
         });
@@ -88,7 +90,7 @@ export default function SignupPage() {
       ];
 
       const categoriesToInsert = defaultCategories.map(cat => ({
-        user_id: authData.user.id,
+        user_id: user.id,
         ...cat,
       }));
 
