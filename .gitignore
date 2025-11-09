@@ -43,6 +43,8 @@ mcp-config.json
 
 # Debug and fix files (not needed for deployment)
 /*.sql
+!SETUP_DATABASE_COMPLETE.sql
 /*.md
 !README.md
+!README_FIX_DATABASE.md
 *.stackdump
