@@ -47,4 +47,5 @@ mcp-config.json
 /*.md
 !README.md
 !README_FIX_DATABASE.md
+!README_SETUP.md
 *.stackdump
