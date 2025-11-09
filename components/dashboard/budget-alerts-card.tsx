@@ -92,6 +92,7 @@ export function BudgetAlertsCard({ alerts }: BudgetAlertsCardProps) {
       <CardContent>
         <div className="space-y-3 max-h-64 overflow-y-auto">
           {alerts.slice(0, 5).map((alert) => {
+            const category = alert.budget_plans.categories as unknown as { name: string; icon: string } | null;
             const percentage = (Number(alert.current_spending) / Number(alert.budget_limit)) * 100;
             const isCritical = percentage >= 100;
 
@@ -107,13 +108,13 @@ export function BudgetAlertsCard({ alerts }: BudgetAlertsCardProps) {
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      {alert.budget_plans.categories && (
+                      {category && (
                         <span className="text-lg">
-                          {alert.budget_plans.categories.icon}
+                          {category.icon}
                         </span>
                       )}
                       <p className="text-sm font-medium text-gray-900">
-                        {alert.budget_plans.categories?.name || "Budget Keseluruhan"}
+                        {category?.name || "Budget Keseluruhan"}
                       </p>
                       <Badge
                         variant="outline"

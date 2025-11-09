@@ -27,7 +27,9 @@ export function BudgetList({ budgets }: BudgetListProps) {
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      {budgets.map((budget) => (
+      {budgets.map((budget) => {
+        const category = budget.categories as unknown as { name: string; icon: string; color: string } | null;
+        return (
         <Card
           key={budget.id}
           className={`border-0 shadow-lg transition-all hover:shadow-xl ${
@@ -41,17 +43,17 @@ export function BudgetList({ budgets }: BudgetListProps) {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {budget.categories && (
+                {category && (
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center shadow-md"
-                    style={{ backgroundColor: budget.categories.color + "30" }}
+                    style={{ backgroundColor: category.color + "30" }}
                   >
-                    <span className="text-2xl">{budget.categories.icon}</span>
+                    <span className="text-2xl">{category.icon}</span>
                   </div>
                 )}
                 <div>
                   <CardTitle className="text-lg">
-                    {budget.categories?.name || "Semua Kategori"}
+                    {category?.name || "Semua Kategori"}
                   </CardTitle>
                   <CardDescription className="flex items-center gap-1 mt-1">
                     <Calendar className="h-3 w-3" />
@@ -127,12 +129,13 @@ export function BudgetList({ budgets }: BudgetListProps) {
               {/* Action Buttons */}
               <div className="flex gap-2">
                 <EditBudgetButton budget={budget} />
-                <DeleteBudgetButton budgetId={budget.id} budgetName={budget.categories?.name || "Semua Kategori"} />
+                <DeleteBudgetButton budgetId={budget.id} budgetName={category?.name || "Semua Kategori"} />
               </div>
             </div>
           </CardContent>
         </Card>
-      ))}
+      );
+      })}
     </div>
   );
 }

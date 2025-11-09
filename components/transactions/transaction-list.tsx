@@ -130,26 +130,28 @@ export function TransactionList({ transactions, categories }: TransactionListPro
   return (
     <>
       <div className="space-y-2">
-        {transactions.map((transaction) => (
+        {transactions.map((transaction) => {
+          const category = transaction.categories as unknown as { name: string; icon: string; color: string } | null;
+          return (
           <div
             key={transaction.id}
             className="flex items-center justify-between p-4 rounded-lg border hover:bg-accent transition-colors"
           >
             <div className="flex items-center gap-3">
-              {transaction.categories && (
+              {category && (
                 <div
                   className="w-10 h-10 rounded-lg flex items-center justify-center"
                   style={{
-                    backgroundColor: transaction.categories.color + "20",
+                    backgroundColor: category.color + "20",
                   }}
                 >
-                  <span className="text-xl">{transaction.categories.icon}</span>
+                  <span className="text-xl">{category.icon}</span>
                 </div>
               )}
               <div>
                 <p className="font-medium">{transaction.description}</p>
                 <p className="text-sm text-muted-foreground">
-                  {transaction.categories?.name} • {formatDate(transaction.date)}
+                  {category?.name} • {formatDate(transaction.date)}
                 </p>
               </div>
             </div>
@@ -184,7 +186,8 @@ export function TransactionList({ transactions, categories }: TransactionListPro
               </Button>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Edit Dialog */}
