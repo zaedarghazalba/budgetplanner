@@ -8,9 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import { useToast } from "@/lib/hooks/use-toast";
 
 export default function SignupPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,12 +24,20 @@ export default function SignupPage() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Password tidak cocok!");
+      toast({
+        variant: "destructive",
+        title: "Password Tidak Cocok",
+        description: "Pastikan password dan konfirmasi password sama.",
+      });
       return;
     }
 
     if (password.length < 6) {
-      alert("Password minimal 6 karakter!");
+      toast({
+        variant: "destructive",
+        title: "Password Terlalu Pendek",
+        description: "Password minimal 6 karakter!",
+      });
       return;
     }
 
@@ -47,12 +57,20 @@ export default function SignupPage() {
       });
 
       if (authError) {
-        alert("Pendaftaran gagal: " + authError.message);
+        toast({
+          variant: "destructive",
+          title: "Pendaftaran Gagal",
+          description: authError.message,
+        });
         return;
       }
 
       if (!authData.user) {
-        alert("Gagal membuat user");
+        toast({
+          variant: "destructive",
+          title: "Pendaftaran Gagal",
+          description: "Gagal membuat user. Silakan coba lagi.",
+        });
         return;
       }
 
@@ -103,11 +121,19 @@ export default function SignupPage() {
         // Continue anyway
       }
 
-      alert("Pendaftaran berhasil! Silakan login.");
+      toast({
+        variant: "success",
+        title: "Pendaftaran Berhasil!",
+        description: "Silakan login dengan akun Anda.",
+      });
       router.push("/login");
     } catch (error) {
       console.error("Signup error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
+      toast({
+        variant: "destructive",
+        title: "Terjadi Kesalahan",
+        description: "Silakan coba lagi.",
+      });
     } finally {
       setLoading(false);
     }

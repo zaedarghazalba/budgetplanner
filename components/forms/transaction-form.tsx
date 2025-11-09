@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/lib/hooks/use-toast";
 
 interface Category {
   id: string;
@@ -23,6 +24,7 @@ interface TransactionFormProps {
 
 export function TransactionForm({ categories, userId }: TransactionFormProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const supabase = createClient();
 
   const [loading, setLoading] = useState(false);
@@ -62,10 +64,18 @@ export function TransactionForm({ categories, userId }: TransactionFormProps) {
 
       // Refresh page to show new transaction
       router.refresh();
-      alert("Transaksi berhasil ditambahkan!");
+      toast({
+        variant: "success",
+        title: "Transaksi Berhasil!",
+        description: "Transaksi berhasil ditambahkan.",
+      });
     } catch (error) {
       console.error("Error adding transaction:", error);
-      alert("Gagal menambahkan transaksi");
+      toast({
+        variant: "destructive",
+        title: "Gagal Menambahkan Transaksi",
+        description: "Silakan coba lagi.",
+      });
     } finally {
       setLoading(false);
     }

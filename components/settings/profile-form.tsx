@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Save } from "lucide-react";
+import { useToast } from "@/lib/hooks/use-toast";
 
 interface ProfileFormProps {
   profile: {
@@ -19,6 +20,7 @@ interface ProfileFormProps {
 
 export function ProfileForm({ profile }: ProfileFormProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
   const [fullName, setFullName] = useState(profile?.full_name || "");
@@ -33,7 +35,11 @@ export function ProfileForm({ profile }: ProfileFormProps) {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
-        alert("Sesi telah berakhir. Silakan login kembali.");
+        toast({
+          variant: "destructive",
+          title: "Sesi Berakhir",
+          description: "Silakan login kembali.",
+        });
         router.push("/login");
         return;
       }
@@ -49,15 +55,27 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         .eq("id", user.id);
 
       if (error) {
-        alert("Gagal memperbarui profil: " + error.message);
+        toast({
+          variant: "destructive",
+          title: "Gagal Memperbarui Profil",
+          description: error.message,
+        });
         return;
       }
 
-      alert("Profil berhasil diperbarui!");
+      toast({
+        variant: "success",
+        title: "Profil Berhasil Diperbarui!",
+        description: "Perubahan telah disimpan.",
+      });
       router.refresh();
     } catch (error) {
       console.error("Error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
+      toast({
+        variant: "destructive",
+        title: "Terjadi Kesalahan",
+        description: "Silakan coba lagi.",
+      });
     } finally {
       setLoading(false);
     }

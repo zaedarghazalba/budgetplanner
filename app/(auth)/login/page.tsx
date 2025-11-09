@@ -8,9 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import { useToast } from "@/lib/hooks/use-toast";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +29,11 @@ export default function LoginPage() {
       });
 
       if (error) {
-        alert("Login gagal: " + error.message);
+        toast({
+          variant: "destructive",
+          title: "Login Gagal",
+          description: error.message,
+        });
         return;
       }
 
@@ -36,7 +42,11 @@ export default function LoginPage() {
       router.refresh();
     } catch (error) {
       console.error("Login error:", error);
-      alert("Terjadi kesalahan. Silakan coba lagi.");
+      toast({
+        variant: "destructive",
+        title: "Terjadi Kesalahan",
+        description: "Silakan coba lagi.",
+      });
     } finally {
       setLoading(false);
     }
