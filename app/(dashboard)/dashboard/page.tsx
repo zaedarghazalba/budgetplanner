@@ -8,21 +8,57 @@ import { BudgetAlertsCard } from "@/components/dashboard/budget-alerts-card";
 import { FeatureTour } from "@/components/tour/feature-tour";
 import { TourTriggerButton } from "@/components/tour/tour-trigger-button";
 
+// Enable Next.js caching with revalidation
+export const revalidate = 60; // Revalidate every 60 seconds
+
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Get current month transactions
+  // Parallel fetch all data for better performance
   const now = new Date();
   const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-  const { data: transactions } = await supabase
-    .from("transactions")
-    .select("*")
-    .eq("user_id", user?.id)
-    .gte("date", firstDayOfMonth.toISOString().split("T")[0])
-    .lte("date", lastDayOfMonth.toISOString().split("T")[0]);
+  // Fetch all queries in parallel
+  const [
+    { data: transactions },
+    { data: recentTransactions },
+    { data: budgetAlerts }
+  ] = await Promise.all([
+    // Current month transactions
+    supabase
+      .from("transactions")
+      .select("*")
+      .eq("user_id", user?.id)
+      .gte("date", firstDayOfMonth.toISOString().split("T")[0])
+      .lte("date", lastDayOfMonth.toISOString().split("T")[0]),
+
+    // Recent transactions with categories
+    supabase
+      .from("transactions")
+      .select(`
+        *,
+        categories (name, icon, color)
+      `)
+      .eq("user_id", user?.id)
+      .order("date", { ascending: false })
+      .limit(5),
+
+    // Budget alerts
+    supabase
+      .from("budget_alerts")
+      .select(`
+        *,
+        budget_plans (
+          period_type,
+          categories (name, icon)
+        )
+      `)
+      .eq("user_id", user?.id)
+      .order("created_at", { ascending: false })
+      .limit(10)
+  ]);
 
   // Calculate totals
   const totalIncome = transactions
@@ -34,31 +70,6 @@ export default async function DashboardPage() {
     .reduce((sum, t) => sum + Number(t.amount), 0) || 0;
 
   const balance = totalIncome - totalExpense;
-
-  // Get recent transactions
-  const { data: recentTransactions } = await supabase
-    .from("transactions")
-    .select(`
-      *,
-      categories (name, icon, color)
-    `)
-    .eq("user_id", user?.id)
-    .order("date", { ascending: false })
-    .limit(5);
-
-  // Get budget alerts
-  const { data: budgetAlerts } = await supabase
-    .from("budget_alerts")
-    .select(`
-      *,
-      budget_plans (
-        period_type,
-        categories (name, icon)
-      )
-    `)
-    .eq("user_id", user?.id)
-    .order("created_at", { ascending: false })
-    .limit(10);
 
   return (
     <div className="space-y-6">

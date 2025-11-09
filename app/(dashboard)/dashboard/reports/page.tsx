@@ -2,8 +2,11 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { Download, Calendar, TrendingUp, TrendingDown, PieChart } from "lucide-react";
-import { ReportsChart } from "@/components/charts/reports-chart";
+import { ReportsChartWrapper } from "@/components/charts/reports-chart-wrapper";
 import { ExportButton } from "@/components/reports/export-button";
+
+// Enable Next.js caching with revalidation
+export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function ReportsPage() {
   const supabase = await createClient();
@@ -158,7 +161,7 @@ export default async function ReportsPage() {
           <CardDescription>Perbandingan pemasukan dan pengeluaran per bulan</CardDescription>
         </CardHeader>
         <CardContent>
-          <ReportsChart data={monthlyData} />
+          <ReportsChartWrapper data={monthlyData} />
         </CardContent>
       </Card>
 

@@ -6,6 +6,9 @@ import { TransactionFilters } from "@/components/transactions/transaction-filter
 import { TransactionPagination } from "@/components/transactions/transaction-pagination";
 import { PAGINATION } from "@/lib/constants";
 
+// Enable Next.js caching with revalidation
+export const revalidate = 30; // Revalidate every 30 seconds
+
 interface SearchParams {
   search?: string;
   type?: string;
@@ -59,19 +62,7 @@ export default async function TransactionsPage({
   const from = (page - 1) * itemsPerPage;
   const to = from + itemsPerPage - 1;
 
-  // Get transactions with pagination
-  const { data: transactions, count } = await query
-    .order("date", { ascending: false })
-    .range(from, to);
-
-  // Get categories for the form and filter
-  const { data: categories } = await supabase
-    .from("categories")
-    .select("*")
-    .eq("user_id", user?.id)
-    .order("name");
-
-  // Calculate totals (for all filtered transactions, not just current page)
+  // Build total query for calculating sums
   let totalQuery = supabase
     .from("transactions")
     .select("type, amount")
@@ -94,7 +85,16 @@ export default async function TransactionsPage({
     totalQuery = totalQuery.lte("date", searchParams.dateTo);
   }
 
-  const { data: allFilteredTransactions } = await totalQuery;
+  // Execute all queries in parallel for better performance
+  const [
+    { data: transactions, count },
+    { data: categories },
+    { data: allFilteredTransactions }
+  ] = await Promise.all([
+    query.order("date", { ascending: false }).range(from, to),
+    supabase.from("categories").select("*").eq("user_id", user?.id).order("name"),
+    totalQuery
+  ]);
 
   const totalIncome = allFilteredTransactions
     ?.filter(t => t.type === "income")

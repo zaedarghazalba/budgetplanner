@@ -186,6 +186,7 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
           <Link
             href="/dashboard"
             onClick={handleLinkClick}
+            prefetch={true}
             className="flex items-center gap-3 group"
           >
             <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -207,6 +208,7 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
                 key={item.href}
                 href={item.href}
                 onClick={handleLinkClick}
+                prefetch={true}
                 className={cn(
                   "group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all relative",
                   isActive
@@ -244,6 +246,7 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
             <Link
               href="/dashboard/settings"
               onClick={handleLinkClick}
+              prefetch={true}
               className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white transition-all group"
             >
               {/* Avatar */}

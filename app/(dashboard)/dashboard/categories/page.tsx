@@ -3,6 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CategoryList } from "@/components/categories/category-list";
 import { AddCategoryButton } from "@/components/categories/add-category-button";
 
+// Enable Next.js caching with revalidation
+export const revalidate = 60; // Revalidate every 60 seconds
+
 export default async function CategoriesPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

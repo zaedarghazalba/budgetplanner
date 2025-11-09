@@ -5,6 +5,9 @@ import { Plus, TrendingUp, AlertCircle, CheckCircle } from "lucide-react";
 import { BudgetList } from "@/components/budget/budget-list";
 import { CreateBudgetButton } from "@/components/budget/create-budget-button";
 
+// Enable Next.js caching with revalidation
+export const revalidate = 30; // Revalidate every 30 seconds
+
 export default async function BudgetPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
