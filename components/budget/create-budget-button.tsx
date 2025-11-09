@@ -78,7 +78,7 @@ export function CreateBudgetButton() {
       console.log("🔍 Found existing budgets:", existingBudgets);
 
       if (existingBudgets && existingBudgets.length > 0) {
-        const category = existingBudgets[0].categories as { name: string; icon: string } | null;
+        const category = existingBudgets[0].categories as unknown as { name: string; icon: string } | null;
         const categoryName = category
           ? `${category.icon} ${category.name}`
           : "Semua Kategori";
