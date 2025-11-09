@@ -42,7 +42,11 @@ const menuItems = [
   },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  onNavigate?: () => void;
+}
+
+export function Sidebar({ onNavigate }: SidebarProps = {}) {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
@@ -52,11 +56,17 @@ export function Sidebar() {
     router.push("/login");
   };
 
+  const handleLinkClick = () => {
+    if (onNavigate) {
+      onNavigate();
+    }
+  };
+
   return (
     <div className="flex h-full flex-col bg-gradient-to-b from-blue-50 via-indigo-50 to-purple-50 border-r border-indigo-100">
       {/* Logo */}
       <div className="p-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
-        <Link href="/dashboard" className="flex items-center gap-3 group">
+        <Link href="/dashboard" onClick={handleLinkClick} className="flex items-center gap-3 group">
           <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
             <span className="text-2xl">💰</span>
           </div>
@@ -72,6 +82,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={handleLinkClick}
               className={cn(
                 "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all",
                 isActive

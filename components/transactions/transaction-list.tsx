@@ -135,28 +135,28 @@ export function TransactionList({ transactions, categories }: TransactionListPro
           return (
           <div
             key={transaction.id}
-            className="flex items-center justify-between p-4 rounded-lg border hover:bg-accent transition-colors"
+            className="flex items-center justify-between p-3 sm:p-4 rounded-lg border hover:bg-accent transition-colors"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
               {category && (
                 <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center"
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{
                     backgroundColor: category.color + "20",
                   }}
                 >
-                  <span className="text-xl">{category.icon}</span>
+                  <span className="text-lg sm:text-xl">{category.icon}</span>
                 </div>
               )}
-              <div>
-                <p className="font-medium">{transaction.description}</p>
-                <p className="text-sm text-muted-foreground">
+              <div className="min-w-0 flex-1">
+                <p className="font-medium text-sm sm:text-base truncate">{transaction.description}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">
                   {category?.name} • {formatDate(transaction.date)}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="text-right mr-2">
+            <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
+              <div className="text-right mr-1 sm:mr-2">
                 <p
                   className={`font-bold ${
                     transaction.type === "income"

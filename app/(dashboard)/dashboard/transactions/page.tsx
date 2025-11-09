@@ -37,11 +37,11 @@ export default async function TransactionsPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 -m-6 mb-6 p-6 rounded-lg shadow-lg">
-        <div className="flex items-center justify-between">
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 -m-3 sm:-m-4 md:-m-6 mb-4 sm:mb-6 p-4 sm:p-6 rounded-lg shadow-lg">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
           <div>
-            <h1 className="text-3xl font-bold text-white">Semua Transaksi</h1>
-            <p className="text-blue-100 mt-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">Semua Transaksi</h1>
+            <p className="text-blue-100 mt-1 text-sm sm:text-base">
               Kelola semua transaksi keuangan Anda
             </p>
           </div>

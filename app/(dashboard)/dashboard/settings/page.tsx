@@ -23,14 +23,14 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 -m-6 mb-6 p-6 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-white">Pengaturan</h1>
-        <p className="text-blue-100 mt-1">
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 -m-3 sm:-m-4 md:-m-6 mb-4 sm:mb-6 p-4 sm:p-6 rounded-lg shadow-lg">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white">Pengaturan</h1>
+        <p className="text-blue-100 mt-1 text-sm sm:text-base">
           Kelola profil dan preferensi akun Anda
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-3">
         {/* Sidebar Menu */}
         <div className="space-y-2">
           <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50">
