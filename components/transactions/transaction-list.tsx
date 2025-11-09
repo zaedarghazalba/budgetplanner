@@ -192,24 +192,24 @@ export function TransactionList({ transactions, categories }: TransactionListPro
 
       {/* Edit Dialog */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[500px] max-w-[95vw]">
           <form onSubmit={handleUpdateSubmit}>
             <DialogHeader>
-              <DialogTitle>Edit Transaksi</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-lg sm:text-xl">Edit Transaksi</DialogTitle>
+              <DialogDescription className="text-sm">
                 Ubah detail transaksi Anda
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-type">Tipe Transaksi</Label>
+            <div className="grid gap-3 sm:gap-4 py-3 sm:py-4">
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="edit-type" className="text-sm sm:text-base">Tipe Transaksi</Label>
                 <select
                   id="edit-type"
                   value={formData.type}
                   onChange={(e) =>
                     setFormData({ ...formData, type: e.target.value, category_id: "" })
                   }
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   disabled={loading}
                 >
                   <option value="expense">Pengeluaran</option>
@@ -217,15 +217,15 @@ export function TransactionList({ transactions, categories }: TransactionListPro
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="edit-category">Kategori</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="edit-category" className="text-sm sm:text-base">Kategori</Label>
                 <select
                   id="edit-category"
                   value={formData.category_id}
                   onChange={(e) =>
                     setFormData({ ...formData, category_id: e.target.value })
                   }
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   disabled={loading}
                   required
                 >
@@ -238,8 +238,8 @@ export function TransactionList({ transactions, categories }: TransactionListPro
                 </select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="edit-amount">Jumlah</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="edit-amount" className="text-sm sm:text-base">Jumlah</Label>
                 <Input
                   id="edit-amount"
                   type="number"
@@ -251,11 +251,12 @@ export function TransactionList({ transactions, categories }: TransactionListPro
                   disabled={loading}
                   min="0"
                   step="100"
+                  className="h-10 sm:h-11"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="edit-description">Deskripsi</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="edit-description" className="text-sm sm:text-base">Deskripsi</Label>
                 <Input
                   id="edit-description"
                   type="text"
@@ -265,11 +266,12 @@ export function TransactionList({ transactions, categories }: TransactionListPro
                   }
                   required
                   disabled={loading}
+                  className="h-10 sm:h-11"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="edit-date">Tanggal</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="edit-date" className="text-sm sm:text-base">Tanggal</Label>
                 <Input
                   id="edit-date"
                   type="date"
@@ -279,14 +281,15 @@ export function TransactionList({ transactions, categories }: TransactionListPro
                   }
                   required
                   disabled={loading}
+                  className="h-10 sm:h-11"
                 />
               </div>
             </div>
-            <DialogFooter>
+            <DialogFooter className="gap-2">
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600"
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700"
               >
                 {loading ? (
                   <>

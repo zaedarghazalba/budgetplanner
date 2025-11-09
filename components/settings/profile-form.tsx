@@ -64,9 +64,9 @@ export function ProfileForm({ profile }: ProfileFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="email" className="text-sm font-semibold">
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+      <div className="space-y-1.5 sm:space-y-2">
+        <Label htmlFor="email" className="text-sm sm:text-base font-semibold">
           Email
         </Label>
         <Input
@@ -74,15 +74,15 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           type="email"
           value={profile?.email || ""}
           disabled
-          className="bg-slate-50 cursor-not-allowed"
+          className="h-10 sm:h-11 bg-slate-50 cursor-not-allowed"
         />
         <p className="text-xs text-muted-foreground">
           Email tidak dapat diubah
         </p>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="fullName" className="text-sm font-semibold">
+      <div className="space-y-1.5 sm:space-y-2">
+        <Label htmlFor="fullName" className="text-sm sm:text-base font-semibold">
           Nama Lengkap
         </Label>
         <Input
@@ -92,12 +92,12 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           onChange={(e) => setFullName(e.target.value)}
           placeholder="Masukkan nama lengkap"
           disabled={loading}
-          className="h-11 border-2 focus:border-indigo-500 transition-colors"
+          className="h-10 sm:h-11 border-2 focus:border-indigo-500 transition-colors"
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="currency" className="text-sm font-semibold">
+      <div className="space-y-1.5 sm:space-y-2">
+        <Label htmlFor="currency" className="text-sm sm:text-base font-semibold">
           Mata Uang
         </Label>
         <select
@@ -105,7 +105,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
           value={currency}
           onChange={(e) => setCurrency(e.target.value)}
           disabled={loading}
-          className="flex h-11 w-full rounded-md border-2 border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
+          className="flex h-10 sm:h-11 w-full rounded-md border-2 border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
         >
           <option value="IDR">IDR (Rupiah)</option>
           <option value="USD">USD (US Dollar)</option>
@@ -115,7 +115,7 @@ export function ProfileForm({ profile }: ProfileFormProps) {
         </select>
       </div>
 
-      <div className="pt-4 border-t">
+      <div className="pt-3 sm:pt-4 border-t">
         <Button
           type="submit"
           disabled={loading}

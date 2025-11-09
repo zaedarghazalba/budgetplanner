@@ -145,24 +145,24 @@ export function CreateBudgetButton() {
           Buat Budget
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[500px] max-w-[95vw]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Buat Budget Plan Baru</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">Buat Budget Plan Baru</DialogTitle>
+            <DialogDescription className="text-sm">
               Atur batas pengeluaran untuk periode tertentu
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="category">Kategori (Opsional)</Label>
+          <div className="grid gap-3 sm:gap-4 py-3 sm:py-4">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="category" className="text-sm sm:text-base">Kategori (Opsional)</Label>
               <select
                 id="category"
                 value={formData.category_id}
                 onChange={(e) =>
                   setFormData({ ...formData, category_id: e.target.value })
                 }
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 disabled={loading}
               >
                 <option value="">Semua Kategori</option>
@@ -179,8 +179,8 @@ export function CreateBudgetButton() {
               </p>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="amount">Jumlah Budget</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="amount" className="text-sm sm:text-base">Jumlah Budget</Label>
               <Input
                 id="amount"
                 type="number"
@@ -193,18 +193,19 @@ export function CreateBudgetButton() {
                 disabled={loading}
                 min="0"
                 step="1000"
+                className="h-10 sm:h-11"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="period">Periode</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="period" className="text-sm sm:text-base">Periode</Label>
               <select
                 id="period"
                 value={formData.period_type}
                 onChange={(e) =>
                   setFormData({ ...formData, period_type: e.target.value })
                 }
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 disabled={loading}
               >
                 <option value="weekly">Mingguan</option>
@@ -212,8 +213,8 @@ export function CreateBudgetButton() {
               </select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="threshold">Alert Threshold (%)</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="threshold" className="text-sm sm:text-base">Alert Threshold (%)</Label>
               <Input
                 id="threshold"
                 type="number"
@@ -225,17 +226,18 @@ export function CreateBudgetButton() {
                 disabled={loading}
                 min="0"
                 max="100"
+                className="h-10 sm:h-11"
               />
               <p className="text-xs text-muted-foreground">
                 Akan mengirim alert jika pengeluaran mencapai persentase ini
               </p>
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               type="submit"
               disabled={loading}
-              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700"
             >
               {loading ? (
                 <>
