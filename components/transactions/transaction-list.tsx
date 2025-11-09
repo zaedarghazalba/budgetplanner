@@ -15,8 +15,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Pencil, Trash2, Loader2 } from "lucide-react";
+import { Pencil, Trash2, Loader2, Receipt } from "lucide-react";
 import { useToast } from "@/lib/hooks/use-toast";
+import { EmptyState } from "@/components/empty-state";
 import type { Transaction, Category, TransactionFormData } from "@/lib/types";
 
 interface TransactionListProps {
@@ -144,13 +145,11 @@ export function TransactionList({ transactions, categories }: TransactionListPro
 
   if (!transactions || transactions.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-5xl mb-4">📝</div>
-        <h3 className="text-lg font-bold mb-2">Belum Ada Transaksi</h3>
-        <p className="text-muted-foreground">
-          Tambahkan transaksi pertama Anda
-        </p>
-      </div>
+      <EmptyState
+        icon="📝"
+        title="Belum Ada Transaksi"
+        description="Mulai kelola keuangan Anda dengan mencatat transaksi pertama. Transaksi akan muncul di sini setelah Anda menambahkannya."
+      />
     );
   }
 

@@ -5,11 +5,37 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Currency to locale mapping
+const CURRENCY_LOCALE_MAP: Record<string, string> = {
+  IDR: "id-ID",
+  USD: "en-US",
+  EUR: "de-DE",
+  GBP: "en-GB",
+  JPY: "ja-JP",
+  CNY: "zh-CN",
+  SGD: "en-SG",
+  MYR: "ms-MY",
+  THB: "th-TH",
+  AUD: "en-AU",
+  CAD: "en-CA",
+  INR: "en-IN",
+};
+
 export function formatCurrency(amount: number, currency: string = "IDR"): string {
-  return new Intl.NumberFormat("id-ID", {
+  const locale = CURRENCY_LOCALE_MAP[currency] || "id-ID";
+
+  return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: currency,
     minimumFractionDigits: 0,
+  }).format(amount);
+}
+
+// Simplified format without currency symbol (just number)
+export function formatNumber(amount: number, locale: string = "id-ID"): string {
+  return new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(amount);
 }
 

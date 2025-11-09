@@ -2,6 +2,7 @@
 
 import { EditCategoryButton } from "./edit-category-button";
 import { DeleteCategoryButton } from "./delete-category-button";
+import { EmptyState } from "@/components/empty-state";
 
 interface Category {
   id: string;
@@ -19,15 +20,11 @@ interface CategoryListProps {
 export function CategoryList({ categories, type }: CategoryListProps) {
   if (categories.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-5xl mb-4">{type === "income" ? "💰" : "💸"}</div>
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">
-          Belum Ada Kategori {type === "income" ? "Pemasukan" : "Pengeluaran"}
-        </h3>
-        <p className="text-sm text-gray-500">
-          Tambahkan kategori pertama Anda untuk mulai mengorganisir transaksi
-        </p>
-      </div>
+      <EmptyState
+        icon={type === "income" ? "💰" : "💸"}
+        title={`Belum Ada Kategori ${type === "income" ? "Pemasukan" : "Pengeluaran"}`}
+        description={`Tambahkan kategori ${type === "income" ? "pemasukan" : "pengeluaran"} pertama Anda untuk mulai mengorganisir transaksi dengan lebih baik.`}
+      />
     );
   }
 
