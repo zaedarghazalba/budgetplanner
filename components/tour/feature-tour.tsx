@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { X, ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { TIMING } from "@/lib/constants";
 
 interface TourStep {
   title: string;
@@ -65,11 +66,11 @@ export function FeatureTour() {
       // Delay to ensure page is loaded
       setTimeout(() => {
         setIsOpen(true);
-      }, 500);
+      }, TIMING.TOUR_DELAY);
     }
   }, []);
 
-  // Auto advance every 10 seconds
+  // Auto advance
   useEffect(() => {
     if (!isOpen || !autoPlay) return;
 
@@ -79,7 +80,7 @@ export function FeatureTour() {
       } else {
         handleComplete();
       }
-    }, 10000); // 10 seconds
+    }, TIMING.TOUR_AUTO_ADVANCE);
 
     return () => clearInterval(timer);
   }, [isOpen, currentStep, autoPlay]);

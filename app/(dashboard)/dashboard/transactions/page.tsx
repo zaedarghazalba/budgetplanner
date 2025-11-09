@@ -2,37 +2,109 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { TransactionList } from "@/components/transactions/transaction-list";
 import { AddTransactionButton } from "@/components/transactions/add-transaction-button";
+import { TransactionFilters } from "@/components/transactions/transaction-filters";
+import { TransactionPagination } from "@/components/transactions/transaction-pagination";
+import { PAGINATION } from "@/lib/constants";
 
-export default async function TransactionsPage() {
+interface SearchParams {
+  search?: string;
+  type?: string;
+  category?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  page?: string;
+}
+
+export default async function TransactionsPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Get all transactions with categories
-  const { data: transactions } = await supabase
+  // Build query
+  let query = supabase
     .from("transactions")
     .select(`
       *,
       categories (name, icon, color)
-    `)
-    .eq("user_id", user?.id)
-    .order("date", { ascending: false })
-    .limit(100);
+    `, { count: "exact" })
+    .eq("user_id", user?.id);
 
-  // Get categories for the form
+  // Apply filters
+  if (searchParams.search) {
+    query = query.ilike("description", `%${searchParams.search}%`);
+  }
+
+  if (searchParams.type && searchParams.type !== "all") {
+    query = query.eq("type", searchParams.type);
+  }
+
+  if (searchParams.category && searchParams.category !== "all") {
+    query = query.eq("category_id", searchParams.category);
+  }
+
+  if (searchParams.dateFrom) {
+    query = query.gte("date", searchParams.dateFrom);
+  }
+
+  if (searchParams.dateTo) {
+    query = query.lte("date", searchParams.dateTo);
+  }
+
+  // Pagination
+  const page = parseInt(searchParams.page || "1");
+  const itemsPerPage = PAGINATION.TRANSACTIONS_PER_PAGE;
+  const from = (page - 1) * itemsPerPage;
+  const to = from + itemsPerPage - 1;
+
+  // Get transactions with pagination
+  const { data: transactions, count } = await query
+    .order("date", { ascending: false })
+    .range(from, to);
+
+  // Get categories for the form and filter
   const { data: categories } = await supabase
     .from("categories")
     .select("*")
     .eq("user_id", user?.id)
     .order("name");
 
-  // Calculate totals
-  const totalIncome = transactions
+  // Calculate totals (for all filtered transactions, not just current page)
+  let totalQuery = supabase
+    .from("transactions")
+    .select("type, amount")
+    .eq("user_id", user?.id);
+
+  // Apply same filters to total calculation
+  if (searchParams.search) {
+    totalQuery = totalQuery.ilike("description", `%${searchParams.search}%`);
+  }
+  if (searchParams.type && searchParams.type !== "all") {
+    totalQuery = totalQuery.eq("type", searchParams.type);
+  }
+  if (searchParams.category && searchParams.category !== "all") {
+    totalQuery = totalQuery.eq("category_id", searchParams.category);
+  }
+  if (searchParams.dateFrom) {
+    totalQuery = totalQuery.gte("date", searchParams.dateFrom);
+  }
+  if (searchParams.dateTo) {
+    totalQuery = totalQuery.lte("date", searchParams.dateTo);
+  }
+
+  const { data: allFilteredTransactions } = await totalQuery;
+
+  const totalIncome = allFilteredTransactions
     ?.filter(t => t.type === "income")
     .reduce((sum, t) => sum + Number(t.amount), 0) || 0;
 
-  const totalExpense = transactions
+  const totalExpense = allFilteredTransactions
     ?.filter(t => t.type === "expense")
     .reduce((sum, t) => sum + Number(t.amount), 0) || 0;
+
+  const totalPages = Math.ceil((count || 0) / itemsPerPage);
 
   return (
     <div className="space-y-6">
@@ -48,6 +120,9 @@ export default async function TransactionsPage() {
           <AddTransactionButton categories={categories || []} />
         </div>
       </div>
+
+      {/* Filters */}
+      <TransactionFilters categories={categories || []} />
 
       {/* Summary */}
       <div className="grid gap-4 md:grid-cols-3">
@@ -79,7 +154,7 @@ export default async function TransactionsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">
-              {transactions?.length || 0}
+              {count || 0}
             </div>
           </CardContent>
         </Card>
@@ -89,13 +164,27 @@ export default async function TransactionsPage() {
       <Card className="border-0 shadow-lg">
         <CardHeader>
           <CardTitle className="text-lg font-bold">Riwayat Transaksi</CardTitle>
-          <CardDescription>100 transaksi terakhir</CardDescription>
+          <CardDescription>
+            {count ? `Menampilkan ${transactions?.length || 0} dari ${count} transaksi` : "Belum ada transaksi"}
+            {page > 1 && ` - Halaman ${page} dari ${totalPages}`}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <TransactionList
             transactions={transactions || []}
             categories={categories || []}
           />
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-6">
+              <TransactionPagination
+                currentPage={page}
+                totalPages={totalPages}
+                searchParams={searchParams}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

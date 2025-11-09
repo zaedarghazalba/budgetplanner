@@ -1,8 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, TrendingUp, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/lib/hooks/use-toast";
+import { ErrorHandler } from "@/lib/error-handler";
 
 interface Alert {
   id: string;
@@ -25,11 +31,73 @@ interface BudgetAlertsCardProps {
 }
 
 export function BudgetAlertsCard({ alerts }: BudgetAlertsCardProps) {
+  const router = useRouter();
+  const { toast } = useToast();
+  const supabase = createClient();
+  const [loadingAlertId, setLoadingAlertId] = useState<string | null>(null);
+
   const unreadAlerts = alerts.filter(a => !a.is_read);
   const criticalAlerts = alerts.filter(a => {
     const percentage = (Number(a.current_spending) / Number(a.budget_limit)) * 100;
     return percentage >= 100;
   });
+
+  const handleMarkAsRead = async (alertId: string) => {
+    setLoadingAlertId(alertId);
+
+    try {
+      const { error } = await supabase
+        .from("budget_alerts")
+        .update({ is_read: true })
+        .eq("id", alertId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Alert Ditandai Dibaca",
+        description: "Alert berhasil ditandai sebagai sudah dibaca.",
+      });
+
+      router.refresh();
+    } catch (error) {
+      console.error("Error marking alert as read:", error);
+      toast(ErrorHandler.getToastConfig(error));
+    } finally {
+      setLoadingAlertId(null);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    if (unreadAlerts.length === 0) return;
+
+    setLoadingAlertId("all");
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) throw new Error("User not authenticated");
+
+      const { error } = await supabase
+        .from("budget_alerts")
+        .update({ is_read: true })
+        .eq("user_id", user.id)
+        .eq("is_read", false);
+
+      if (error) throw error;
+
+      toast({
+        title: "Semua Alert Ditandai Dibaca",
+        description: `${unreadAlerts.length} alert berhasil ditandai sebagai sudah dibaca.`,
+      });
+
+      router.refresh();
+    } catch (error) {
+      console.error("Error marking all alerts as read:", error);
+      toast(ErrorHandler.getToastConfig(error));
+    } finally {
+      setLoadingAlertId(null);
+    }
+  };
 
   if (alerts.length === 0) {
     return (
@@ -72,11 +140,22 @@ export function BudgetAlertsCard({ alerts }: BudgetAlertsCardProps) {
               Budget Alerts
             </CardTitle>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             {unreadAlerts.length > 0 && (
-              <Badge variant="destructive" className="bg-red-500">
-                {unreadAlerts.length} Baru
-              </Badge>
+              <>
+                <Badge variant="destructive" className="bg-red-500">
+                  {unreadAlerts.length} Baru
+                </Badge>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleMarkAllAsRead}
+                  disabled={loadingAlertId !== null}
+                  className="text-xs h-7"
+                >
+                  {loadingAlertId === "all" ? "..." : "Tandai Semua Dibaca"}
+                </Button>
+              </>
             )}
             {criticalAlerts.length > 0 && (
               <Badge variant="destructive" className="bg-orange-500">
@@ -99,13 +178,24 @@ export function BudgetAlertsCard({ alerts }: BudgetAlertsCardProps) {
             return (
               <div
                 key={alert.id}
-                className={`p-3 rounded-lg border-l-4 ${
+                className={`p-3 rounded-lg border-l-4 relative ${
                   isCritical
                     ? "bg-red-50 border-red-500"
                     : "bg-orange-50 border-orange-500"
                 } ${!alert.is_read ? "ring-2 ring-orange-200" : ""}`}
               >
-                <div className="flex items-start justify-between gap-2">
+                {/* Dismiss button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleMarkAsRead(alert.id)}
+                  disabled={loadingAlertId === alert.id}
+                  className="absolute top-2 right-2 h-6 w-6 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+
+                <div className="flex items-start justify-between gap-2 pr-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       {category && (

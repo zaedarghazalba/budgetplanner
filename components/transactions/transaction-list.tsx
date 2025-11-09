@@ -17,10 +17,11 @@ import {
 } from "@/components/ui/dialog";
 import { Pencil, Trash2, Loader2 } from "lucide-react";
 import { useToast } from "@/lib/hooks/use-toast";
+import type { Transaction, Category, TransactionFormData } from "@/lib/types";
 
 interface TransactionListProps {
-  transactions: any[];
-  categories: any[];
+  transactions: Transaction[];
+  categories: Category[];
 }
 
 export function TransactionList({ transactions, categories }: TransactionListProps) {
@@ -30,16 +31,16 @@ export function TransactionList({ transactions, categories }: TransactionListPro
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
-  const [formData, setFormData] = useState({
-    type: "",
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [formData, setFormData] = useState<TransactionFormData>({
+    type: "expense",
     category_id: "",
     amount: "",
     description: "",
     date: "",
   });
 
-  const handleEdit = (transaction: any) => {
+  const handleEdit = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
     setFormData({
       type: transaction.type,
@@ -51,13 +52,15 @@ export function TransactionList({ transactions, categories }: TransactionListPro
     setEditOpen(true);
   };
 
-  const handleDelete = (transaction: any) => {
+  const handleDelete = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
     setDeleteOpen(true);
   };
 
   const handleUpdateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedTransaction) return;
+
     setLoading(true);
 
     try {
@@ -101,6 +104,8 @@ export function TransactionList({ transactions, categories }: TransactionListPro
   };
 
   const handleDeleteConfirm = async () => {
+    if (!selectedTransaction) return;
+
     setLoading(true);
 
     try {
@@ -233,7 +238,7 @@ export function TransactionList({ transactions, categories }: TransactionListPro
                   id="edit-type"
                   value={formData.type}
                   onChange={(e) =>
-                    setFormData({ ...formData, type: e.target.value, category_id: "" })
+                    setFormData({ ...formData, type: e.target.value as "income" | "expense", category_id: "" })
                   }
                   className="flex h-10 sm:h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   disabled={loading}
