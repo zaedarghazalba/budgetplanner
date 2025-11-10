@@ -18,20 +18,25 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Budget Planner - Kelola Keuangan Anda",
+  title: {
+    default: "Budget Planner - Kelola Keuangan Anda",
+    template: "%s | Budget Planner",
+  },
   description: "Aplikasi budget planner modern untuk mencatat pengeluaran dan pemasukan",
   manifest: "/manifest.json",
+  applicationName: "Budget Planner",
+  keywords: ["budget", "planner", "keuangan", "finance", "money", "expense", "income"],
+  authors: [{ name: "Budget Planner Team" }],
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-icon.png",
-  },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Budget Planner",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
   },
   formatDetection: {
     telephone: false,
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
   },
 };
 
