@@ -1,10 +1,57 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Budget Planner - Kelola Keuangan Anda dengan Mudah",
+  description: "Aplikasi budget planner modern untuk mencatat pengeluaran, memantau pemasukan, dan mengatur budget. Gratis dengan Google Sign-in. Visualisasi data, alert budget, dan laporan keuangan lengkap.",
+  alternates: {
+    canonical: "https://budgetplanner.vercel.app",
+  },
+  openGraph: {
+    title: "Budget Planner - Kelola Keuangan Anda dengan Mudah",
+    description: "Aplikasi budget planner modern untuk mencatat pengeluaran dan mengatur budget",
+    url: "https://budgetplanner.vercel.app",
+    siteName: "Budget Planner",
+    type: "website",
+    locale: "id_ID",
+  },
+};
 
 export default function LandingPage() {
+  // Structured data for SEO
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'Budget Planner',
+    description: 'Aplikasi budget planner modern untuk mencatat pengeluaran, memantau pemasukan, dan mengatur budget',
+    url: 'https://budgetplanner.vercel.app',
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'Web Browser',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'IDR',
+    },
+    featureList: [
+      'Visualisasi Data Keuangan',
+      'Alert Budget',
+      'Laporan Bulanan',
+      'Responsive Design',
+      'Data Aman & Private',
+    ],
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <>
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <nav className="flex items-center justify-between">
@@ -20,12 +67,12 @@ export default function LandingPage() {
       {/* Hero Section */}
       <main className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Kelola Keuangan Anda dengan Mudah
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Budget Planner membantu Anda mencatat pengeluaran, memantau pemasukan,
-            dan mengatur budget dengan lebih efektif.
+            dan mengatur budget dengan lebih efektif. Gratis untuk semua pengguna.
           </p>
           <Link href="/login">
             <Button size="lg" className="text-lg px-8 py-6">
@@ -112,8 +159,14 @@ export default function LandingPage() {
       <footer className="container mx-auto px-4 py-8 mt-16 border-t">
         <div className="text-center text-gray-600">
           <p>&copy; 2025 Budget Planner. Built with Next.js & Supabase.</p>
+          <p className="text-sm mt-2">
+            <Link href="/sitemap.xml" className="hover:underline">Sitemap</Link>
+            {" • "}
+            <Link href="/robots.txt" className="hover:underline">Robots</Link>
+          </p>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   );
 }

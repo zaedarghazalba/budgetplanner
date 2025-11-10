@@ -2,13 +2,8 @@
 User-agent: *
 Allow: /
 
-# Disallow authentication pages
-Disallow: /login
-Disallow: /signup
+# Only disallow authentication callbacks (sensitive)
 Disallow: /callback
-
-# Disallow dashboard (private pages)
-Disallow: /dashboard
 
 # Sitemap
 Sitemap: https://budgetplanner.vercel.app/sitemap.xml

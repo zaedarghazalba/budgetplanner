@@ -18,15 +18,29 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://budgetplanner.vercel.app'),
   title: {
     default: "Budget Planner - Kelola Keuangan Anda",
     template: "%s | Budget Planner",
   },
-  description: "Aplikasi budget planner modern untuk mencatat pengeluaran dan pemasukan",
+  description: "Aplikasi budget planner modern untuk mencatat pengeluaran dan pemasukan. Kelola budget, catat transaksi, dan analisis keuangan Anda dengan mudah.",
   manifest: "/manifest.json",
   applicationName: "Budget Planner",
-  keywords: ["budget", "planner", "keuangan", "finance", "money", "expense", "income"],
+  keywords: ["budget", "planner", "keuangan", "finance", "money", "expense", "income", "budget tracker", "expense tracker", "personal finance"],
   authors: [{ name: "Budget Planner Team" }],
+  creator: "Budget Planner Team",
+  publisher: "Budget Planner",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
@@ -34,6 +48,19 @@ export const metadata: Metadata = {
   },
   formatDetection: {
     telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'id_ID',
+    url: 'https://budgetplanner.vercel.app',
+    title: 'Budget Planner - Kelola Keuangan Anda',
+    description: 'Aplikasi budget planner modern untuk mencatat pengeluaran dan pemasukan',
+    siteName: 'Budget Planner',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Budget Planner - Kelola Keuangan Anda',
+    description: 'Aplikasi budget planner modern untuk mencatat pengeluaran dan pemasukan',
   },
   other: {
     "mobile-web-app-capable": "yes",
