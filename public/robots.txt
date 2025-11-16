@@ -1,0 +1,9 @@
+# Allow all search engines
+User-agent: *
+Allow: /
+
+# Only disallow authentication callbacks (sensitive)
+Disallow: /callback
+
+# Sitemap
+Sitemap: https://budgetplanner.vercel.app/sitemap.xml
