@@ -14,16 +14,17 @@ interface ReportsChartProps {
 export function ReportsChart({ data }: ReportsChartProps) {
   return (
     <ResponsiveContainer width="100%" height={350}>
-      <BarChart data={data}>
+      <BarChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
         <XAxis
           dataKey="month"
           className="text-xs"
-          tick={{ fill: "#64748b" }}
+          tick={{ fill: "#64748b", fontSize: 11 }}
         />
         <YAxis
           className="text-xs"
-          tick={{ fill: "#64748b" }}
+          width={55}
+          tick={{ fill: "#64748b", fontSize: 11 }}
           tickFormatter={(value) => {
             if (value >= 1000000) {
               return `${(value / 1000000).toFixed(1)}jt`;

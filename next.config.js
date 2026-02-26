@@ -22,16 +22,24 @@ const nextConfig = {
 
   // Performance optimizations
   swcMinify: true,
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
+  ...(process.env.NODE_ENV === 'production' ? {
+    compiler: {
+      removeConsole: true,
+    },
+  } : {}),
 
   // Reduce bundle size
   productionBrowserSourceMaps: false,
 
   // Experimental features for better performance
   experimental: {
-    optimizePackageImports: ['lucide-react', 'recharts', '@radix-ui/react-icons'],
+    optimizePackageImports: [
+      'lucide-react',
+      'recharts',
+      '@radix-ui/react-icons',
+      'date-fns',
+      '@supabase/supabase-js',
+    ],
   },
 
   // Enable compression
@@ -39,13 +47,6 @@ const nextConfig = {
 
   // Optimize CSS
   optimizeFonts: true,
-
-  // Modern JavaScript output
-  modularizeImports: {
-    'lucide-react': {
-      transform: 'lucide-react/dist/esm/icons/{{member}}',
-    },
-  },
 
   // React strict mode for better performance checks
   reactStrictMode: true,

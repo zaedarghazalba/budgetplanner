@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -30,55 +30,17 @@ import {
 import { useToast } from "@/lib/hooks/use-toast";
 import { ErrorHandler } from "@/lib/error-handler";
 
-const menuItems = [
-  {
-    title: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-    description: "Ringkasan keuangan Anda",
-  },
-  {
-    title: "Transaksi",
-    href: "/dashboard/transactions",
-    icon: Receipt,
-    description: "Kelola transaksi harian",
-  },
-  {
-    title: "Budget Plan",
-    href: "/dashboard/budget",
-    icon: PiggyBank,
-    description: "Atur rencana budget",
-  },
-  {
-    title: "Kategori",
-    href: "/dashboard/categories",
-    icon: Folder,
-    description: "Kelola kategori",
-  },
-  {
-    title: "Laporan",
-    href: "/dashboard/reports",
-    icon: FileText,
-    description: "Analisis dan laporan",
-  },
-  {
-    title: "Pengaturan",
-    href: "/dashboard/settings",
-    icon: Settings,
-    description: "Pengaturan akun",
-  },
-];
-
-interface SidebarProps {
-  onNavigate?: () => void;
-}
-
 interface UserProfile {
   email: string;
   full_name: string | null;
 }
 
-export function Sidebar({ onNavigate }: SidebarProps = {}) {
+interface SidebarProps {
+  onNavigate?: () => void;
+  userProfile?: UserProfile | null;
+}
+
+export const Sidebar = memo(function Sidebar({ onNavigate, userProfile: initialProfile }: SidebarProps = {}) {
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
@@ -86,11 +48,17 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
 
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(initialProfile ?? null);
+  const [loadingProfile, setLoadingProfile] = useState(!initialProfile);
 
-  // Fetch user profile
+  // Only fetch user profile if not provided as a prop
   useEffect(() => {
+    if (initialProfile) {
+      setUserProfile(initialProfile);
+      setLoadingProfile(false);
+      return;
+    }
+
     const fetchUserProfile = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -105,7 +73,6 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
           if (profile) {
             setUserProfile(profile);
           } else {
-            // Fallback to auth user email
             setUserProfile({
               email: user.email || "",
               full_name: null,
@@ -120,9 +87,55 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
     };
 
     fetchUserProfile();
-  }, [supabase]);
+  }, [supabase, initialProfile]);
+
+  const isDemo = pathname.startsWith("/demo");
+  const basePath = isDemo ? "/demo" : "/dashboard";
+
+  const menuItems = [
+    {
+      title: "Dashboard",
+      href: basePath,
+      icon: LayoutDashboard,
+      description: "Ringkasan keuangan Anda",
+    },
+    {
+      title: "Transaksi",
+      href: `${basePath}${isDemo ? "" : "/transactions"}`,
+      icon: Receipt,
+      description: "Kelola transaksi harian",
+    },
+    {
+      title: "Budget Plan",
+      href: `${basePath}${isDemo ? "" : "/budget"}`,
+      icon: PiggyBank,
+      description: "Atur rencana budget",
+    },
+    {
+      title: "Kategori",
+      href: `${basePath}${isDemo ? "" : "/categories"}`,
+      icon: Folder,
+      description: "Kelola kategori",
+    },
+    {
+      title: "Laporan",
+      href: `${basePath}${isDemo ? "" : "/reports"}`,
+      icon: FileText,
+      description: "Analisis dan laporan",
+    },
+    {
+      title: "Pengaturan",
+      href: `${basePath}${isDemo ? "" : "/settings"}`,
+      icon: Settings,
+      description: "Pengaturan akun",
+    },
+  ];
 
   const handleLogoutClick = () => {
+    if (isDemo) {
+      router.push("/");
+      return;
+    }
     setLogoutDialogOpen(true);
   };
 
@@ -156,10 +169,10 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
 
   // Check if route is active (including nested routes)
   const isRouteActive = (href: string) => {
-    if (href === "/dashboard") {
-      return pathname === "/dashboard";
+    if (href === basePath) {
+      return pathname === basePath;
     }
-    return pathname.startsWith(href);
+    return pathname.startsWith(href) && href !== basePath;
   };
 
   // Get initials from name or email
@@ -184,7 +197,7 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
         {/* Logo */}
         <div className="p-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
           <Link
-            href="/dashboard"
+            href={basePath}
             onClick={handleLinkClick}
             prefetch={true}
             className="flex items-center gap-3 group"
@@ -194,7 +207,7 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
             </div>
             <div>
               <span className="font-bold text-lg text-white block">Budget Planner</span>
-              <span className="text-xs text-blue-100">Manage Your Finances</span>
+              <span className="text-xs text-blue-100">{isDemo ? "Demo Mode" : "Manage Your Finances"}</span>
             </div>
           </Link>
         </div>
@@ -207,15 +220,26 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={handleLinkClick}
                 prefetch={true}
                 className={cn(
                   "group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all relative",
                   isActive
                     ? "bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/30"
-                    : "text-indigo-700 hover:bg-white hover:shadow-md"
+                    : "text-indigo-700 hover:bg-white hover:shadow-md",
+                  isDemo && item.href !== "/demo" && "opacity-50 cursor-not-allowed"
                 )}
                 title={item.description}
+                onClick={(e) => {
+                  if (isDemo && item.href !== "/demo") {
+                    e.preventDefault();
+                    toast({
+                      title: "Fitur Terbatas",
+                      description: "Hanya Dashboard yang tersedia di mode demo ini.",
+                    });
+                  } else {
+                    handleLinkClick();
+                  }
+                }}
               >
                 <item.icon className={cn(
                   "h-5 w-5 flex-shrink-0",
@@ -244,7 +268,7 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
             </div>
           ) : userProfile ? (
             <Link
-              href="/dashboard/settings"
+              href={isDemo ? "/demo" : "/dashboard/settings"}
               onClick={handleLinkClick}
               prefetch={true}
               className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white transition-all group"
@@ -282,7 +306,7 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
             ) : (
               <LogOut className="h-5 w-5 group-hover:scale-110 transition-transform" />
             )}
-            <span>{isLoggingOut ? "Logging out..." : "Keluar"}</span>
+            <span>{isLoggingOut ? "Logging out..." : (isDemo ? "Keluar Demo" : "Keluar")}</span>
           </button>
         </div>
       </div>
@@ -322,4 +346,4 @@ export function Sidebar({ onNavigate }: SidebarProps = {}) {
       </AlertDialog>
     </>
   );
-}
+});

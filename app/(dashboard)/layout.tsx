@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { DashboardWrapper } from "@/components/dashboard-wrapper";
@@ -10,20 +11,23 @@ export default async function DashboardLayout({
 }) {
   const supabase = await createClient();
 
+  // Fetch user data once — shared by layout, header, and sidebar
   const { data: { user } } = await supabase.auth.getUser();
 
   // Fetch user profile
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user?.id)
-    .single();
+  const { data: profile } = user
+    ? await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single()
+    : { data: null };
 
   return (
     <div className="h-screen flex">
       {/* Sidebar */}
       <aside className="w-64 hidden md:block">
-        <Sidebar />
+        <Sidebar userProfile={profile ? { email: profile.email, full_name: profile.full_name } : null} />
       </aside>
 
       {/* Main Content */}

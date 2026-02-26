@@ -58,12 +58,27 @@ export const ExpenseChart = memo(function ExpenseChart({ transactions }: Expense
     );
   }
 
+  // Format large numbers to abbreviated form (e.g. 1.5jt, 500rb)
+  const formatYAxis = (value: number) => {
+    if (value >= 1_000_000) {
+      return `${(value / 1_000_000).toFixed(value % 1_000_000 === 0 ? 0 : 1)}jt`;
+    }
+    if (value >= 1_000) {
+      return `${(value / 1_000).toFixed(value % 1_000 === 0 ? 0 : 0)}rb`;
+    }
+    return value.toString();
+  };
+
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={chartData}>
+      <BarChart data={chartData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
+        <XAxis dataKey="date" fontSize={12} tick={{ fontSize: 11 }} />
+        <YAxis
+          width={55}
+          tickFormatter={formatYAxis}
+          tick={{ fontSize: 11 }}
+        />
         <Tooltip
           formatter={(value: number) =>
             new Intl.NumberFormat("id-ID", {
@@ -74,8 +89,8 @@ export const ExpenseChart = memo(function ExpenseChart({ transactions }: Expense
           }
         />
         <Legend />
-        <Bar dataKey="Pemasukan" fill="#10B981" />
-        <Bar dataKey="Pengeluaran" fill="#EF4444" />
+        <Bar dataKey="Pemasukan" fill="#10B981" radius={[4, 4, 0, 0]} />
+        <Bar dataKey="Pengeluaran" fill="#EF4444" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );

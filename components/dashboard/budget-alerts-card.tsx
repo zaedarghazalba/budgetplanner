@@ -38,7 +38,9 @@ export function BudgetAlertsCard({ alerts }: BudgetAlertsCardProps) {
 
   const unreadAlerts = alerts.filter(a => !a.is_read);
   const criticalAlerts = alerts.filter(a => {
-    const percentage = (Number(a.current_spending) / Number(a.budget_limit)) * 100;
+    const spending = Number(a.current_spending) || 0;
+    const limit = Number(a.budget_limit) || 0;
+    const percentage = limit > 0 ? (spending / limit) * 100 : 0;
     return percentage >= 100;
   });
 
@@ -172,17 +174,18 @@ export function BudgetAlertsCard({ alerts }: BudgetAlertsCardProps) {
         <div className="space-y-3 max-h-64 overflow-y-auto">
           {alerts.slice(0, 5).map((alert) => {
             const category = alert.budget_plans.categories as unknown as { name: string; icon: string } | null;
-            const percentage = (Number(alert.current_spending) / Number(alert.budget_limit)) * 100;
+            const spending = Number(alert.current_spending) || 0;
+            const limit = Number(alert.budget_limit) || 0;
+            const percentage = limit > 0 ? (spending / limit) * 100 : 0;
             const isCritical = percentage >= 100;
 
             return (
               <div
                 key={alert.id}
-                className={`p-3 rounded-lg border-l-4 relative ${
-                  isCritical
-                    ? "bg-red-50 border-red-500"
-                    : "bg-orange-50 border-orange-500"
-                } ${!alert.is_read ? "ring-2 ring-orange-200" : ""}`}
+                className={`p-3 rounded-lg border-l-4 relative ${isCritical
+                  ? "bg-red-50 border-red-500"
+                  : "bg-orange-50 border-orange-500"
+                  } ${!alert.is_read ? "ring-2 ring-orange-200" : ""}`}
               >
                 {/* Dismiss button */}
                 <Button
@@ -231,9 +234,8 @@ export function BudgetAlertsCard({ alerts }: BudgetAlertsCardProps) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className={`text-2xl font-bold ${
-                      isCritical ? "text-red-600" : "text-orange-600"
-                    }`}>
+                    <div className={`text-2xl font-bold ${isCritical ? "text-red-600" : "text-orange-600"
+                      }`}>
                       {Math.round(percentage)}%
                     </div>
                     {!alert.is_read && (

@@ -113,10 +113,27 @@ export default function LoginPage() {
               )}
             </Button>
 
-            <div className="text-center text-sm pt-2">
-              <span className="text-muted-foreground">Belum punya akun? </span>
-              <Link href="/signup" className="text-indigo-600 hover:text-indigo-700 hover:underline font-semibold">
-                Daftar di sini
+            <div className="text-center text-sm pt-2 space-y-4">
+              <div>
+                <span className="text-muted-foreground">Belum punya akun? </span>
+                <Link href="/signup" className="text-indigo-600 hover:text-indigo-700 hover:underline font-semibold">
+                  Daftar di sini
+                </Link>
+              </div>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-gray-200"></span>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white/95 px-2 text-muted-foreground">Atau</span>
+                </div>
+              </div>
+
+              <Link href="/demo" className="block w-full">
+                <Button variant="outline" type="button" className="w-full h-11 border-2 border-indigo-100 text-indigo-600 hover:bg-indigo-50 font-medium">
+                  🚀 Coba Demo Sekarang
+                </Button>
               </Link>
             </div>
           </form>
